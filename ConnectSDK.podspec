@@ -94,6 +94,7 @@ Pod::Spec.new do |s|
     sp.requires_arc = true
 
     sp.dependency 'ConnectSDK/no-arc'
+    sp.dependency 'GCDWebServer'
   end
 
   s.subspec 'no-arc' do |sp|
