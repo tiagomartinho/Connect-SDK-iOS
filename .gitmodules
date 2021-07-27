@@ -1,4 +1,0 @@
-[submodule "core"]
-	path = core
-	url = https://github.com/tiagomartinho/Connect-SDK-iOS-Core.git
-	branch = dev
