@@ -87,6 +87,8 @@ Pod::Spec.new do |s|
     "core/Frameworks/asi-http-request/External/Reachability/*.{h,m}",
     "core/Frameworks/asi-http-request/Classes/*.{h,m}"
 
+  s.default_subspec = 'Core'
+
   s.subspec 'Core' do |sp|
     sp.source_files  = "ConnectSDKDefaultPlatforms.h", "core/**/*.{h,m}"
     sp.exclude_files = (non_arc_files.dup << "core/ConnectSDK*Tests/**/*")
