@@ -332,7 +332,12 @@ static double searchAttemptsBeforeKill = 6.0;
                             //Check that this is what is wanted
                             foundService.UUID = theUUID;
                             foundService.type =  theType;
-                            foundService.address = [[location stringByReplacingOccurrencesOfString:@"http://" withString:@""] componentsSeparatedByString:@":"][0] ;
+                            NSURL* url = [NSURL URLWithString:location];
+                            if (url && url.scheme && url.host) {
+                                foundService.address = url.host;
+                            } else {
+                                foundService.address = anAddress;
+                            }
                             foundService.port = 3001;
                             isNew = YES;
                         }
