@@ -21,7 +21,7 @@
 #import "DevicePicker.h"
 #import "DiscoveryProvider.h"
 #import "DiscoveryManager.h"
-#import "UIApplicationHelper.h"
+#import "ApplicationHelper.h"
 
 @implementation DevicePicker
 {
@@ -188,7 +188,7 @@
 
     _tableViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:pickerCancel style:UIBarButtonItemStylePlain target:self action:@selector(dismissPicker:)];
     
-    UIWindow *mainWindow = [[UIApplicationHelper sharedApplication].windows firstObject];
+    UIWindow *mainWindow = [[ApplicationHelper sharedApplication].windows firstObject];
     [mainWindow.rootViewController presentViewController:_navigationController animated:self.shouldAnimatePicker completion:nil];
 }
 

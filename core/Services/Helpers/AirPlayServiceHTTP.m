@@ -84,7 +84,7 @@
     if (self.backgroundTaskId != UIBackgroundTaskInvalid)
     {
         dispatch_async(self.networkingQueue, ^{
-            [[UIApplicationHelper sharedApplication] endBackgroundTask:self.backgroundTaskId];
+            [[ApplicationHelper sharedApplication] endBackgroundTask:self.backgroundTaskId];
             _backgroundTaskId = UIBackgroundTaskInvalid;
         });
     }
@@ -231,7 +231,7 @@
     dispatch_async(self.networkingQueue, ^void {
         // this will prevent the connection dropping on background/sleep modes
         if (self.backgroundTaskId == UIBackgroundTaskInvalid)
-            _backgroundTaskId = [[UIApplicationHelper sharedApplication] beginBackgroundTaskWithExpirationHandler:NULL];
+            _backgroundTaskId = [[ApplicationHelper sharedApplication] beginBackgroundTaskWithExpirationHandler:NULL];
 
         [request startSynchronous];
     });

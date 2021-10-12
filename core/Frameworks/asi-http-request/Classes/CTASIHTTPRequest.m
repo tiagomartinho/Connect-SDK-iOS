@@ -25,7 +25,7 @@
 #import "CTASIInputStream.h"
 #import "CTASIDataDecompressor.h"
 #import "CTASIDataCompressor.h"
-#import "UIApplicationHelper.h"
+#import "ApplicationHelper.h"
 
 // Automatically set on build
 NSString *ASIHTTPRequestVersion = @"v1.8.1-61 2011-09-19";
@@ -856,13 +856,13 @@ static NSOperationQueue *sharedQueue = nil;
 		#if TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
 		if ([CTASIHTTPRequest isMultitaskingSupported] && [self shouldContinueWhenAppEntersBackground]) {
             if (!backgroundTask || backgroundTask == UIBackgroundTaskInvalid) {
-                backgroundTask = [[UIApplicationHelper sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+                backgroundTask = [[ApplicationHelper sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
                     // Synchronize the cleanup call on the main thread in case
                     // the task actually finishes at around the same time.
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if (backgroundTask != UIBackgroundTaskInvalid)
                         {
-                            [[UIApplicationHelper sharedApplication] endBackgroundTask:backgroundTask];
+                            [[ApplicationHelper sharedApplication] endBackgroundTask:backgroundTask];
                             backgroundTask = UIBackgroundTaskInvalid;
                             [self cancel];
                         }
@@ -3566,7 +3566,7 @@ static NSOperationQueue *sharedQueue = nil;
 	if ([CTASIHTTPRequest isMultitaskingSupported] && [self shouldContinueWhenAppEntersBackground]) {
 		dispatch_async(dispatch_get_main_queue(), ^{
 			if (backgroundTask != UIBackgroundTaskInvalid) {
-				[[UIApplicationHelper sharedApplication] endBackgroundTask:backgroundTask];
+				[[ApplicationHelper sharedApplication] endBackgroundTask:backgroundTask];
 				backgroundTask = UIBackgroundTaskInvalid;
 			}
 		});
@@ -4742,14 +4742,14 @@ static NSOperationQueue *sharedQueue = nil;
 + (void)showNetworkActivityIndicator
 {
 #if TARGET_OS_IPHONE
-	[[UIApplicationHelper sharedApplication] setNetworkActivityIndicatorVisible:YES];
+	[[ApplicationHelper sharedApplication] setNetworkActivityIndicatorVisible:YES];
 #endif
 }
 
 + (void)hideNetworkActivityIndicator
 {
 #if TARGET_OS_IPHONE
-	[[UIApplicationHelper sharedApplication] setNetworkActivityIndicatorVisible:NO];
+	[[ApplicationHelper sharedApplication] setNetworkActivityIndicatorVisible:NO];
 #endif
 }
 
