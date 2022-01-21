@@ -26,11 +26,7 @@
 #import <unicode/utf8.h>
 #endif
 
-#if TARGET_OS_IPHONE
-#import <Endian.h>
-#else
 #import <CoreServices/CoreServices.h>
-#endif
 
 #import <CommonCrypto/CommonDigest.h>
 #import <Security/SecRandom.h>
@@ -43,7 +39,7 @@
 #define lgsr_dispatch_release(x) dispatch_release(x)
 #endif
 
-#if !__has_feature(objc_arc) 
+#if !__has_feature(objc_arc)
 #error SocketRocket must be compiled with ARC enabled
 #endif
 
@@ -662,7 +658,7 @@ static __strong NSData *CRLFCRLF;
         NSMutableData *mutablePayload = [[NSMutableData alloc] initWithLength:sizeof(uint16_t) + maxMsgSize];
         NSData *payload = mutablePayload;
         
-        ((uint16_t *)mutablePayload.mutableBytes)[0] = EndianU16_BtoN(code);
+        ((uint16_t *)mutablePayload.mutableBytes)[0] = NSSwapBigShortToHost(code);
         
         if (reason) {
             NSRange remainingRange = {0};
@@ -686,7 +682,7 @@ static __strong NSData *CRLFCRLF;
 
 - (void)_closeWithProtocolError:(NSString *)message;
 {
-    // Need to shunt this on the _callbackQueue first to see if they received any messages 
+    // Need to shunt this on the _callbackQueue first to see if they received any messages
     [self _performDelegateBlock:^{
         [self closeWithCode:LGSRStatusCodeProtocolError reason:message];
         dispatch_async(_workQueue, ^{
@@ -717,7 +713,7 @@ static __strong NSData *CRLFCRLF;
 }
 
 - (void)_writeData:(NSData *)data;
-{    
+{
     [self assertOnWorkQueue];
 
     if (_closeWhenFinishedWriting) {
@@ -822,7 +818,7 @@ static inline BOOL closeCodeIsValid(int closeCode) {
         return;
     } else if (dataSize >= 2) {
         [data getBytes:&closeCode length:sizeof(closeCode)];
-        _closeCode = EndianU16_BtoN(closeCode);
+        _closeCode = NSSwapBigShortToHost(closeCode);
         if (!closeCodeIsValid(_closeCode)) {
             [self _closeWithProtocolError:[NSString stringWithFormat:@"Cannot have close code of %d", _closeCode]];
             return;
@@ -857,7 +853,7 @@ static inline BOOL closeCodeIsValid(int closeCode) {
 }
 
 - (void)_handleFrameWithData:(NSData *)frameData opCode:(NSInteger)opcode;
-{                
+{
     // Check that the current data is valid UTF8
     
     BOOL isControlFrame = (opcode == LGSROpCodePing || opcode == LGSROpCodePong || opcode == LGSROpCodeConnectionClose);
@@ -1047,12 +1043,12 @@ static const uint8_t LGSRPayloadLenMask   = 0x7F;
                 
                 if (header.payload_length == 126) {
                     assert(mapped_size >= sizeof(uint16_t));
-                    uint16_t newLen = EndianU16_BtoN(*(uint16_t *)(mapped_buffer));
+                    uint16_t newLen = NSSwapBigShortToHost(*(uint16_t *)(mapped_buffer));
                     header.payload_length = newLen;
                     offset += sizeof(uint16_t);
                 } else if (header.payload_length == 127) {
                     assert(mapped_size >= sizeof(uint64_t));
-                    header.payload_length = EndianU64_BtoN(*(uint64_t *)(mapped_buffer));
+                    header.payload_length = NSSwapBigLongLongToHost(*(uint64_t *)(mapped_buffer));
                     offset += sizeof(uint64_t);
                 } else {
                     assert(header.payload_length < 126 && header.payload_length >= 0);
@@ -1104,8 +1100,8 @@ static const uint8_t LGSRPayloadLenMask   = 0x7F;
         }
     }
     
-    if (_closeWhenFinishedWriting && 
-        _outputBuffer.length - _outputBufferOffset == 0 && 
+    if (_closeWhenFinishedWriting &&
+        _outputBuffer.length - _outputBufferOffset == 0 &&
         (_inputStream.streamStatus != NSStreamStatusNotOpen &&
          _inputStream.streamStatus != NSStreamStatusClosed) &&
         !_sentClose) {
@@ -1172,7 +1168,7 @@ static const uint8_t LGSRPayloadLenMask   = 0x7F;
 }
 
 - (void)_addConsumerWithDataLength:(size_t)dataLength callback:(data_callback)callback readToCurrentFrame:(BOOL)readToCurrentFrame unmaskBytes:(BOOL)unmaskBytes;
-{   
+{
     [self assertOnWorkQueue];
     assert(dataLength);
     
@@ -1181,7 +1177,7 @@ static const uint8_t LGSRPayloadLenMask   = 0x7F;
 }
 
 - (void)_addConsumerWithScanner:(stream_scanner)consumer callback:(data_callback)callback dataLength:(size_t)dataLength;
-{    
+{
     [self assertOnWorkQueue];
     [_consumers addObject:[_consumerPool consumerWithScanner:consumer handler:callback bytesNeeded:dataLength readToCurrentFrame:NO unmaskBytes:NO]];
     [self _pumpScanner];
@@ -1249,7 +1245,7 @@ static const char CRLFCRLFBytes[] = {'\r', '\n', '\r', '\n'};
     
     size_t foundSize = 0;
     if (consumer.consumer) {
-        NSData *tempView = [NSData dataWithBytesNoCopy:(char *)_readBuffer.bytes + _readBufferOffset length:_readBuffer.length - _readBufferOffset freeWhenDone:NO];  
+        NSData *tempView = [NSData dataWithBytesNoCopy:(char *)_readBuffer.bytes + _readBufferOffset length:_readBuffer.length - _readBufferOffset freeWhenDone:NO];
         foundSize = consumer.consumer(tempView);
     } else {
         assert(consumer.bytesNeeded);
@@ -1310,7 +1306,7 @@ static const char CRLFCRLFBytes[] = {'\r', '\n', '\r', '\n'};
                     } else {
                         _currentStringScanPosition += valid_utf8_size;
                     }
-                } 
+                }
                 
             }
             
@@ -1396,11 +1392,11 @@ static const size_t LGSRFrameHeaderOverhead = 32;
         frame_buffer[1] |= payloadLength;
     } else if (payloadLength <= UINT16_MAX) {
         frame_buffer[1] |= 126;
-        *((uint16_t *)(frame_buffer + frame_buffer_size)) = EndianU16_BtoN((uint16_t)payloadLength);
+        *((uint16_t *)(frame_buffer + frame_buffer_size)) = NSSwapBigShortToHost((uint16_t)payloadLength);
         frame_buffer_size += sizeof(uint16_t);
     } else {
         frame_buffer[1] |= 127;
-        *((uint64_t *)(frame_buffer + frame_buffer_size)) = EndianU64_BtoN((uint64_t)payloadLength);
+        *((uint64_t *)(frame_buffer + frame_buffer_size)) = NSSwapBigLongLongToHost((uint64_t)payloadLength);
         frame_buffer_size += sizeof(uint64_t);
     }
         
@@ -1451,7 +1447,7 @@ static const size_t LGSRFrameHeaderOverhead = 32;
                 
                 ///////////************** handle CA Certificates changes ******
                 
-                SecKeyRef publicKey =SecCertificateCopyPublicKey((cert));
+                SecKeyRef publicKey = SecCertificateCopyKey(cert);
                 
                 NSString *certficatePublicKeyString = nil;
                 certficatePublicKeyString = [weakSelf getPublicKeyAsBase64:(publicKey)];
