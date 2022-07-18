@@ -1,4 +1,4 @@
-@interface UIApplicationHelper: NSObject
+@interface ApplicationHelper: NSObject
 
  + (nullable UIApplication *)sharedApplication;
 

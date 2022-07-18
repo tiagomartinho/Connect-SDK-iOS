@@ -12,7 +12,7 @@
 #import "CTASIAuthenticationDialog.h"
 #import "CTASIHTTPRequest.h"
 #import <QuartzCore/QuartzCore.h>
-#import "UIApplicationHelper.h"
+#import "ApplicationHelper.h"
 
 static CTASIAuthenticationDialog *sharedDialog = nil;
 BOOL isDismissing = NO;
@@ -137,7 +137,7 @@ static const NSUInteger kDomainSection = 1;
 {
 	[self showTitle];
 	
-	UIInterfaceOrientation o = (UIInterfaceOrientation)[[UIApplicationHelper sharedApplication] statusBarOrientation];
+	UIInterfaceOrientation o = (UIInterfaceOrientation)[[ApplicationHelper sharedApplication] statusBarOrientation];
 	CGFloat angle = 0;
 	switch (o) {
 		case UIDeviceOrientationLandscapeLeft: angle = 90; break;
@@ -185,7 +185,7 @@ static const NSUInteger kDomainSection = 1;
 		presentingController = [[CTASIAutorotatingViewController alloc] initWithNibName:nil bundle:nil];
 
 		// Attach to the window, but don't interfere.
-		UIWindow *window = [[[UIApplicationHelper sharedApplication] windows] objectAtIndex:0];
+		UIWindow *window = [[[ApplicationHelper sharedApplication] windows] objectAtIndex:0];
 		[window addSubview:[presentingController view]];
 		[[presentingController view] setFrame:CGRectZero];
 		[[presentingController view] setUserInteractionEnabled:NO];

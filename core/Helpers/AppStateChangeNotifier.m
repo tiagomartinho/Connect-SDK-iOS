@@ -24,7 +24,7 @@
 
 #import "DispatchQueueBlockRunner.h"
 
-#import "UIApplicationHelper.h"
+#import "ApplicationHelper.h"
 
 @interface AppStateChangeNotifier ()
 
@@ -54,7 +54,7 @@
 
         self.backgroundObserverHandle = ({
             [[self center] addObserverForName:UIApplicationDidEnterBackgroundNotification
-                                       object:[UIApplicationHelper sharedApplication]
+                                       object:[ApplicationHelper sharedApplication]
                                         queue:queue
                                    usingBlock:^(NSNotification *note) {
                                        [self runStateChangeBlock:
@@ -64,7 +64,7 @@
 
         self.foregroundObserverHandle = ({
             [[self center] addObserverForName:UIApplicationDidBecomeActiveNotification
-                                       object:[UIApplicationHelper sharedApplication]
+                                       object:[ApplicationHelper sharedApplication]
                                         queue:queue
                                    usingBlock:^(NSNotification *note) {
                                        [self runStateChangeBlock:
