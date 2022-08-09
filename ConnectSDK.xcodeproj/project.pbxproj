@@ -146,7 +146,7 @@
 		44EF61981A12E1C800CF344C /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44EF61971A12E1C800CF344C /* MediaAccessibility.framework */; };
 		44EF619B1A12E23200CF344C /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 44EF619A1A12E23200CF344C /* libicucore.dylib */; };
 		44EF61A41A12FC8800CF344C /* SSDPDiscoveryProviderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 44EF61A31A12FC8800CF344C /* SSDPDiscoveryProviderTests.m */; };
-		956A424E28A27FA40034CCBC /* UIAlertController+Window.h in Headers */ = {isa = PBXBuildFile; fileRef = 956A424C28A27FA40034CCBC /* UIAlertController+Window.h */; };
+		956A424E28A27FA40034CCBC /* UIAlertController+Window.h in Headers */ = {isa = PBXBuildFile; fileRef = 956A424C28A27FA40034CCBC /* UIAlertController+Window.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		956A424F28A27FA40034CCBC /* UIAlertController+Window.m in Sources */ = {isa = PBXBuildFile; fileRef = 956A424D28A27FA40034CCBC /* UIAlertController+Window.m */; };
 		B2FA88C0C2447C5CAF1E61A4 /* NSMutableDictionary+NilSafe.h in Headers */ = {isa = PBXBuildFile; fileRef = B2FA8E8AF8F4302A1B5541EA /* NSMutableDictionary+NilSafe.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B2FA8A641C2CBEAFB9CF9097 /* NSMutableDictionary+NilSafe.m in Sources */ = {isa = PBXBuildFile; fileRef = B2FA850A1C2BA371738A19B6 /* NSMutableDictionary+NilSafe.m */; };
