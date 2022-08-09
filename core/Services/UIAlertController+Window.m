@@ -28,6 +28,7 @@
 }
 
 - (void)show:(BOOL)animated {
+#if !(defined(__has_feature) && __has_feature(attribute_availability_app_extension))
     self.alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.alertWindow.rootViewController = [[UIViewController alloc] init];
 
@@ -44,6 +45,7 @@
 
     [self.alertWindow makeKeyAndVisible];
     [self.alertWindow.rootViewController presentViewController:self animated:animated completion:nil];
+#endif
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
