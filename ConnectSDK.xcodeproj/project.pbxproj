@@ -146,6 +146,8 @@
 		44EF61981A12E1C800CF344C /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44EF61971A12E1C800CF344C /* MediaAccessibility.framework */; };
 		44EF619B1A12E23200CF344C /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 44EF619A1A12E23200CF344C /* libicucore.dylib */; };
 		44EF61A41A12FC8800CF344C /* SSDPDiscoveryProviderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 44EF61A31A12FC8800CF344C /* SSDPDiscoveryProviderTests.m */; };
+		95D0C98728A27D79002D4FEB /* UIAlertController+Window.m in Sources */ = {isa = PBXBuildFile; fileRef = 95D0C98528A27D79002D4FEB /* UIAlertController+Window.m */; };
+		95D0C98828A27E06002D4FEB /* UIAlertController+Window.h in Headers */ = {isa = PBXBuildFile; fileRef = 95D0C98428A27D79002D4FEB /* UIAlertController+Window.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B2FA88C0C2447C5CAF1E61A4 /* NSMutableDictionary+NilSafe.h in Headers */ = {isa = PBXBuildFile; fileRef = B2FA8E8AF8F4302A1B5541EA /* NSMutableDictionary+NilSafe.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B2FA8A641C2CBEAFB9CF9097 /* NSMutableDictionary+NilSafe.m in Sources */ = {isa = PBXBuildFile; fileRef = B2FA850A1C2BA371738A19B6 /* NSMutableDictionary+NilSafe.m */; };
 		B2FA8F2EAE3B0B60D75F9647 /* CapabilityConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = B2FA8C3DF809E5088781B765 /* CapabilityConstants.m */; };
@@ -495,6 +497,8 @@
 		44EF61971A12E1C800CF344C /* MediaAccessibility.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaAccessibility.framework; path = System/Library/Frameworks/MediaAccessibility.framework; sourceTree = SDKROOT; };
 		44EF619A1A12E23200CF344C /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		44EF61A31A12FC8800CF344C /* SSDPDiscoveryProviderTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSDPDiscoveryProviderTests.m; sourceTree = "<group>"; };
+		95D0C98428A27D79002D4FEB /* UIAlertController+Window.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+Window.h"; sourceTree = "<group>"; };
+		95D0C98528A27D79002D4FEB /* UIAlertController+Window.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+Window.m"; sourceTree = "<group>"; };
 		B2FA850A1C2BA371738A19B6 /* NSMutableDictionary+NilSafe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+NilSafe.m"; sourceTree = "<group>"; };
 		B2FA8C3DF809E5088781B765 /* CapabilityConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CapabilityConstants.m; sourceTree = "<group>"; };
 		B2FA8E8AF8F4302A1B5541EA /* NSMutableDictionary+NilSafe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+NilSafe.h"; sourceTree = "<group>"; };
@@ -1316,6 +1320,8 @@
 				EA5FB857199AEC550057B4B4 /* WebOSTVService.h */,
 				447F93B91B714E8B005703EA /* WebOSTVService_Private.h */,
 				EA5FB858199AEC550057B4B4 /* WebOSTVService.m */,
+				95D0C98428A27D79002D4FEB /* UIAlertController+Window.h */,
+				95D0C98528A27D79002D4FEB /* UIAlertController+Window.m */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1472,6 +1478,7 @@
 				EA5FB8D5199AEC560057B4B4 /* MediaPlayer.h in Headers */,
 				449426381AF830A1006BAFF2 /* SynchronousBlockRunner.h in Headers */,
 				EA5FB907199AEC570057B4B4 /* WebOSWebAppSession.h in Headers */,
+				95D0C98828A27E06002D4FEB /* UIAlertController+Window.h in Headers */,
 				EA5FB892199AEC560057B4B4 /* CTASIInputStream.h in Headers */,
 				EA5FB8DC199AEC560057B4B4 /* WebAppLauncher.h in Headers */,
 				EA5FB8BB199AEC560057B4B4 /* AppInfo.h in Headers */,
@@ -1873,6 +1880,7 @@
 				EA5FB8B8199AEC560057B4B4 /* LGSRWebSocket.m in Sources */,
 				EA5FB8EC199AEC570057B4B4 /* WebOSTVServiceConfig.m in Sources */,
 				EA5FB8B6199AEC560057B4B4 /* CTGuid.m in Sources */,
+				95D0C98728A27D79002D4FEB /* UIAlertController+Window.m in Sources */,
 				4494263F1AF83588006BAFF2 /* DispatchQueueBlockRunner.m in Sources */,
 				EA5FB8FB199AEC570057B4B4 /* WebOSTVServiceSocketClient.m in Sources */,
 				EA5FB8C9199AEC560057B4B4 /* ProgramInfo.m in Sources */,
