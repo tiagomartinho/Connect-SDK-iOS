@@ -1,11 +1,3 @@
-//
-//  NSObject+UIAlertController_Show.m
-//  ConnectSDK
-//
-//  Created by Andrés Pizá Bückmann on 9/8/22.
-//  Copyright © 2022 LG Electronics. All rights reserved.
-//
-
 #import "UIAlertController+Window.h"
 #import <objc/runtime.h>
 
