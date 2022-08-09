@@ -145,41 +145,41 @@
     NSString *pickerCancel = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Search_Cancel" value:@"Cancel" table:@"ConnectSDK"];
     
     // TODO
-    _actionSheet = [[UIActionSheet alloc] initWithTitle:pickerTitle
-                                               delegate:self
-                                      cancelButtonTitle:nil
-                                 destructiveButtonTitle:nil
-                                      otherButtonTitles:nil];
-
-    @synchronized (_generatedDeviceList)
-    {
-        _actionSheetDeviceList = [_generatedDeviceList copy];
-    }
-
-    [_actionSheetDeviceList enumerateObjectsUsingBlock:^(ConnectableDevice *device, NSUInteger idx, BOOL *stop)
-    {
-        [_actionSheet addButtonWithTitle:device.friendlyName];
-    }];
-    
-    _actionSheet.cancelButtonIndex = [_actionSheet addButtonWithTitle:pickerCancel];
-    
-    if ([sender isKindOfClass:[UIBarButtonItem class]])
-        [_actionSheet showFromBarButtonItem:sender animated:_shouldAnimatePicker];
-    else if ([sender isKindOfClass:[UITabBar class]])
-        [_actionSheet showFromTabBar:sender];
-    else if ([sender isKindOfClass:[UIToolbar class]])
-        [_actionSheet showFromToolbar:sender];
-    else if ([sender isKindOfClass:[UIControl class]])
-    {
-        UIControl *senderView = (UIControl *)sender;
-        [_actionSheet showFromRect:senderView.frame inView:senderView.superview animated:_shouldAnimatePicker];
-    } else
-    {
-        [_actionSheet showInView:sender];
-        
-        _actionSheetTargetView = sender;
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleRotation) name:UIDeviceOrientationDidChangeNotification object:nil];
-    }
+//    _actionSheet = [[UIActionSheet alloc] initWithTitle:pickerTitle
+//                                               delegate:self
+//                                      cancelButtonTitle:nil
+//                                 destructiveButtonTitle:nil
+//                                      otherButtonTitles:nil];
+//
+//    @synchronized (_generatedDeviceList)
+//    {
+//        _actionSheetDeviceList = [_generatedDeviceList copy];
+//    }
+//
+//    [_actionSheetDeviceList enumerateObjectsUsingBlock:^(ConnectableDevice *device, NSUInteger idx, BOOL *stop)
+//    {
+//        [_actionSheet addButtonWithTitle:device.friendlyName];
+//    }];
+//    
+//    _actionSheet.cancelButtonIndex = [_actionSheet addButtonWithTitle:pickerCancel];
+//    
+//    if ([sender isKindOfClass:[UIBarButtonItem class]])
+//        [_actionSheet showFromBarButtonItem:sender animated:_shouldAnimatePicker];
+//    else if ([sender isKindOfClass:[UITabBar class]])
+//        [_actionSheet showFromTabBar:sender];
+//    else if ([sender isKindOfClass:[UIToolbar class]])
+//        [_actionSheet showFromToolbar:sender];
+//    else if ([sender isKindOfClass:[UIControl class]])
+//    {
+//        UIControl *senderView = (UIControl *)sender;
+//        [_actionSheet showFromRect:senderView.frame inView:senderView.superview animated:_shouldAnimatePicker];
+//    } else
+//    {
+//        [_actionSheet showInView:sender];
+//        
+//        _actionSheetTargetView = sender;
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleRotation) name:UIDeviceOrientationDidChangeNotification object:nil];
+//    }
 }
 
 - (void) showNavigation
