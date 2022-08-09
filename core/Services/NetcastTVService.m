@@ -353,9 +353,9 @@ NSString *lgeUDAPRequestURI[8] = {
     NSString *cancel = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Cancel" value:@"Cancel" table:@"ConnectSDK"];
 
     // TODO
-    _pairingAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancel otherButtonTitles:ok, nil];
-    _pairingAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
-    [_pairingAlert show];
+//    _pairingAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancel otherButtonTitles:ok, nil];
+//    _pairingAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
+//    [_pairingAlert show];
 }
 
 - (void)willPresentAlertView:(UIAlertView *)alertView
