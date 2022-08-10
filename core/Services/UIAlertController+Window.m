@@ -1,5 +1,6 @@
 #import "UIAlertController+Window.h"
 #import <objc/runtime.h>
+#import "ApplicationHelper.h"
 
 @interface UIAlertController (Private)
 
@@ -28,11 +29,10 @@
 }
 
 - (void)show:(BOOL)animated {
-#if !(defined(__has_feature) && __has_feature(attribute_availability_app_extension))
     self.alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.alertWindow.rootViewController = [[UIViewController alloc] init];
 
-    id<UIApplicationDelegate> delegate = [UIApplication sharedApplication].delegate;
+    id<UIApplicationDelegate> delegate = [ApplicationHelper sharedApplication].delegate;
     // Applications that does not load with UIMainStoryboardFile might not have a window property:
     if ([delegate respondsToSelector:@selector(window)]) {
         // we inherit the main window's tintColor
@@ -40,12 +40,11 @@
     }
 
     // window level is above the top window (this makes the alert, if it's a sheet, show over the keyboard)
-    UIWindow *topWindow = [UIApplication sharedApplication].windows.lastObject;
+    UIWindow *topWindow = [ApplicationHelper sharedApplication].windows.lastObject;
     self.alertWindow.windowLevel = topWindow.windowLevel + 1;
 
     [self.alertWindow makeKeyAndVisible];
     [self.alertWindow.rootViewController presentViewController:self animated:animated completion:nil];
-#endif
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
