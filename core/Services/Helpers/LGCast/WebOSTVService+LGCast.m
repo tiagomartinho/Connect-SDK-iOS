@@ -105,7 +105,7 @@ NSString *const kCommandTeardown = @"TEARDOWN";
 
 - (void)sendCommandWithService:(NSString *)service command:(NSString *)command parameter:(NSDictionary *)parameter successBlock:(SuccessBlock)success failureBlock:(FailureBlock)failure {
     if (self.webOSTVServiceConfig == nil || self.webOSTVServiceConfig.clientKey == nil) {
-        [Log errorLGCast:@"client key is nil"];
+        [LGLog errorLGCast:@"client key is nil"];
         return;
     }
     

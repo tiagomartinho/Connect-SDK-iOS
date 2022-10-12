@@ -529,28 +529,28 @@ SWIFT_CLASS("_TtC6LGCast17LGCastSecurityKey")
 @end
 
 
-// SWIFT_CLASS("_TtC6LGCast3Log")
-// @interface Log : NSObject
-// - (nonnull instancetype)init SWIFT_UNAVAILABLE;
-// + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-// @end
+SWIFT_CLASS("_TtC6LGCast3Log")
+@interface LGLog : NSObject
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
 
-// typedef SWIFT_ENUM(NSInteger, LogLevel, closed) {
-//   LogLevelDebug = 0,
-//   LogLevelInfo = 1,
-//   LogLevelNotice = 2,
-//   LogLevelError = 3,
-//   LogLevelFault = 4,
-// };
+typedef SWIFT_ENUM(NSInteger, LogLevel, closed) {
+  LogLevelDebug = 0,
+  LogLevelInfo = 1,
+  LogLevelNotice = 2,
+  LogLevelError = 3,
+  LogLevelFault = 4,
+};
 
 
-// @interface Log (SWIFT_EXTENSION(LGCast))
-// + (void)debugLGCast:(NSString * _Nonnull)message;
-// + (void)infoLGCast:(NSString * _Nonnull)message;
-// + (void)noticeLGCast:(NSString * _Nonnull)message;
-// + (void)errorLGCast:(NSString * _Nonnull)message;
-// + (void)faultLGCast:(NSString * _Nonnull)message;
-// @end
+@interface LGLog (SWIFT_EXTENSION(LGCast))
++ (void)debugLGCast:(NSString * _Nonnull)message;
++ (void)infoLGCast:(NSString * _Nonnull)message;
++ (void)noticeLGCast:(NSString * _Nonnull)message;
++ (void)errorLGCast:(NSString * _Nonnull)message;
++ (void)faultLGCast:(NSString * _Nonnull)message;
+@end
 
 
 
