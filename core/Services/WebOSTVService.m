@@ -31,12 +31,11 @@
 #import "CTXMLReader.h"
 #import "RemoteCameraService.h"
 #import "ScreenMirroringService.h"
-#import "UIAlertController+Window.h"
 
 #define kKeyboardEnter @"\x1b ENTER \x1b"
 #define kKeyboardDelete @"\x1b DELETE \x1b"
 
-@interface WebOSTVService () <UIAlertViewDelegate, WebOSTVServiceSocketClientDelegate, RemoteCameraServiceDelegate, ScreenMirroringControlDelegate>
+@interface WebOSTVService () <UIAlertViewDelegate, WebOSTVServiceSocketClientDelegate, RemoteCameraServiceDelegate, ScreenMirroringServiceDelegate>
 {
     NSArray *_permissions;
 
@@ -44,7 +43,7 @@
     NSMutableDictionary *_appToAppIdMappings;
 
     NSTimer *_pairingTimer;
-    UIAlertController *_pairingAlert;
+    UIAlertView *_pairingAlert;
 
     NSMutableArray *_keyboardQueue;
     BOOL _keyboardQueueProcessing;
@@ -335,23 +334,14 @@
     NSString *message = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Request" value:@"Please confirm the connection on your device" table:@"ConnectSDK"];
     NSString *ok = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_OK" value:@"OK" table:@"ConnectSDK"];
     NSString *cancel = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Cancel" value:@"Cancel" table:@"ConnectSDK"];
-
-    UIAlertAction* okAction = [UIAlertAction actionWithTitle:ok style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction * action) {}];
-    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction * action) {}];
-
-
-    _pairingAlert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    [_pairingAlert addAction:okAction];
-    [_pairingAlert addAction:cancelAction];
-
-    if(self.pairingType == DeviceServicePairingTypePinCode || self.pairingType == DeviceServicePairingTypeMixed){
-        [_pairingAlert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {}];
-        _pairingAlert.message = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Request_Pin" value:@"Please enter the pin code" table:@"ConnectSDK"];
-    }
-
-    dispatch_on_main(^{ [_pairingAlert show]; });
+    
+    // TODO
+//    _pairingAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancel otherButtonTitles:ok, nil];
+//    if(self.pairingType == DeviceServicePairingTypePinCode || self.pairingType == DeviceServicePairingTypeMixed){
+//        _pairingAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
+//        _pairingAlert.message = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Request_Pin" value:@"Please enter the pin code" table:@"ConnectSDK"];
+//    }
+//    dispatch_on_main(^{ [_pairingAlert show]; });
 }
 
 -(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
@@ -394,8 +384,8 @@
 
 - (void) socket:(WebOSTVServiceSocketClient *)socket registrationFailed:(NSError *)error
 {
-    if (_pairingAlert)
-        dispatch_on_main(^{ [_pairingAlert dismissViewControllerAnimated:YES completion:^{}]; });
+    if (_pairingAlert && _pairingAlert.isVisible)
+        dispatch_on_main(^{ [_pairingAlert dismissWithClickedButtonIndex:0 animated:NO]; });
 
     if (self.delegate && [self.delegate respondsToSelector:@selector(deviceService:pairingFailedWithError:)])
         dispatch_on_main(^{ [self.delegate deviceService:self pairingFailedWithError:error]; });
@@ -407,8 +397,8 @@
 {
     [_pairingTimer invalidate];
 
-    if (_pairingAlert)
-        dispatch_on_main(^{ [_pairingAlert dismissViewControllerAnimated:YES completion:^{}]; });
+    if (_pairingAlert && _pairingAlert.visible)
+        dispatch_on_main(^{ [_pairingAlert dismissWithClickedButtonIndex:1 animated:YES]; });
 
     if ([self.delegate respondsToSelector:@selector(deviceServicePairingSuccess:)])
         dispatch_on_main(^{ [self.delegate deviceServicePairingSuccess:self]; });
@@ -419,8 +409,8 @@
 
 - (void) socket:(WebOSTVServiceSocketClient *)socket didFailWithError:(NSError *)error
 {
-    if (_pairingAlert)
-        dispatch_on_main(^{ [_pairingAlert dismissViewControllerAnimated:YES completion:^{}]; });
+    if (_pairingAlert && _pairingAlert.visible)
+        dispatch_on_main(^{ [_pairingAlert dismissWithClickedButtonIndex:0 animated:YES]; });
 
     if ([self.delegate respondsToSelector:@selector(deviceService:didFailConnectWithError:)])
         dispatch_on_main(^{ [self.delegate deviceService:self didFailConnectWithError:error]; });
@@ -2414,7 +2404,7 @@
     _screenMirroringDelegate = delegate;
 }
 
-#pragma mark - ScreenMirroringControlDelegate
+#pragma mark - ScreenMirroringServiceDelegate
 - (void)screenMirroringDidStart:(BOOL)result {
     if(_screenMirroringDelegate != nil && [_screenMirroringDelegate respondsToSelector:@selector(screenMirroringDidStart:)]){
         [_screenMirroringDelegate screenMirroringDidStart:result];
@@ -2476,7 +2466,7 @@
     _remoteCameraDelegate = delegate;
 }
 
-#pragma mark - RemoteCameraControlDelegate
+#pragma mark - RemoteCameraServiceDelegate
 - (void)remoteCameraDidPair {
     if(_remoteCameraDelegate != nil && [_remoteCameraDelegate respondsToSelector:@selector(remoteCameraDidPair)]){
         [_remoteCameraDelegate remoteCameraDidPair];
