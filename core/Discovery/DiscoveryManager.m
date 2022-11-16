@@ -50,11 +50,8 @@
 
     BOOL _shouldResumeSearch;
     BOOL _searching;
-    
-    DevicePicker *_currentPicker;
 
-    NSTimer *_ssidTimer;
-    NSString *_currentSSID;
+    DevicePicker *_currentPicker;
 }
 
 @synthesize pairingLevel = _pairingLevel;
@@ -107,13 +104,13 @@
 - (instancetype) initWithAppStateChangeNotifier:(nullable AppStateChangeNotifier *)stateNotifier
 {
     self = [super init];
-    
+
     if (self)
     {
         _shouldResumeSearch = NO;
         _searching = NO;
         _useDeviceStore = YES;
-        
+
         _discoveryProviders = [[NSMutableArray alloc] init];
         _deviceClasses = [[NSMutableDictionary alloc] init];
 
@@ -130,10 +127,8 @@
             typeof(self) sself = wself;
             [sself resumeDiscovery];
         };
-
-        [self startSSIDTimer];
     }
-    
+
     return self;
 }
 
@@ -142,11 +137,11 @@
 - (void) registerDefaultServices
 {
     NSDictionary *defaultPlatforms = kConnectSDKDefaultPlatforms;
-    
+
     [defaultPlatforms enumerateKeysAndObjectsUsingBlock:^(NSString *platformClassName, NSString *discoveryProviderClassName, BOOL *stop) {
         Class platformClass = NSClassFromString(platformClassName);
         Class discoveryProviderClass = NSClassFromString(discoveryProviderClassName);
-        
+
         [self registerDeviceService:platformClass withDiscovery:discoveryProviderClass];
     }];
 }
@@ -167,11 +162,11 @@
 {
     if (![deviceClass isSubclassOfClass:[DeviceService class]])
         return;
-    
+
     __block DiscoveryProvider *discoveryProvider;
     // FIXME don't create new provider unless necessary
     DiscoveryProvider *newDiscoveryProvider = providerFactory();
-    
+
     [_discoveryProviders enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         if ([[obj class] isSubclassOfClass:[newDiscoveryProvider class]])
         {
@@ -179,22 +174,22 @@
             *stop = YES;
         }
     }];
-    
+
     if (discoveryProvider == nil)
     {
         discoveryProvider = newDiscoveryProvider;
         discoveryProvider.delegate = self;
         _discoveryProviders = [_discoveryProviders arrayByAddingObject:discoveryProvider];
     }
-    
+
     NSDictionary *discoveryParameters = [deviceClass discoveryParameters];
-    
+
     NSString *serviceId = [discoveryParameters objectForKey:@"serviceId"];
 
     NSMutableDictionary *mutableClasses = [NSMutableDictionary dictionaryWithDictionary:_deviceClasses];
     [mutableClasses setObject:deviceClass forKey:serviceId];
     _deviceClasses = [NSDictionary dictionaryWithDictionary:mutableClasses];
-    
+
     [discoveryProvider addDeviceFilter:discoveryParameters];
 }
 
@@ -202,12 +197,12 @@
 {
     if (![discoveryClass isSubclassOfClass:[DiscoveryProvider class]])
         return;
-    
+
     if (![deviceClass isSubclassOfClass:[DeviceService class]])
         return;
-    
+
     __block DiscoveryProvider *discoveryProvider;
-    
+
     [_discoveryProviders enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         if ([[obj class] isSubclassOfClass:discoveryClass])
         {
@@ -215,20 +210,20 @@
             *stop = YES;
         }
     }];
-    
+
     if (discoveryProvider == nil)
         return;
-    
+
     NSDictionary *discoveryParameters = [discoveryClass discoveryParameters];
-    
+
     NSString *serviceId = [discoveryParameters objectForKey:@"serviceId"];
 
     NSMutableDictionary *mutableClasses = [NSMutableDictionary dictionaryWithDictionary:_deviceClasses];
     [mutableClasses removeObjectForKey:serviceId];
     _deviceClasses = [NSDictionary dictionaryWithDictionary:mutableClasses];
-    
+
     [discoveryProvider removeDeviceFilter:discoveryParameters];
-    
+
     if ([discoveryProvider isEmpty])
     {
         [discoveryProvider stopDiscovery];
@@ -240,70 +235,19 @@
     }
 }
 
-#pragma mark - Wireless SSID Change Detection
-
-- (void) startSSIDTimer
-{
-    _ssidTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(detectSSIDChange) userInfo:nil repeats:YES];
-    [_ssidTimer fire];
-}
-
-- (void) stopSSIDTimer
-{
-    [_ssidTimer invalidate];
-    _ssidTimer = nil;
-}
-
-- (void) detectSSIDChange
-{
-    NSArray *interfaces = (__bridge_transfer id) CNCopySupportedInterfaces();
-
-    __block NSString *ssidName;
-
-    [interfaces enumerateObjectsUsingBlock:^(NSString *interface, NSUInteger idx, BOOL *stop)
-    {
-        if ([interface caseInsensitiveCompare:@"en0"] != NSOrderedSame)
-            return;
-
-        CFDictionaryRef cfDict = CNCopyCurrentNetworkInfo((CFStringRef)interface);
-        NSDictionary *info = (NSDictionary *)CFBridgingRelease(cfDict);
-
-        if (info && [info objectForKey:@"SSID"])
-        {
-            ssidName = [info objectForKey:@"SSID"];
-            *stop = YES;
-        }
-    }];
-
-    if (ssidName == nil)
-        ssidName = @"";
-
-    if ([ssidName caseInsensitiveCompare:_currentSSID] != NSOrderedSame)
-    {
-        if (_currentSSID != nil)
-        {
-            [self purgeDeviceList];
-
-            [[NSNotificationCenter defaultCenter] postNotificationName:kConnectSDKWirelessSSIDChanged object:nil];
-        }
-
-        _currentSSID = ssidName;
-    }
-}
-
 - (void) purgeDeviceList
 {
     [self.compatibleDevices enumerateKeysAndObjectsUsingBlock:^(id key, ConnectableDevice *device, BOOL *stop)
     {
         [device disconnect];
-        
+
         if (self.delegate)
             [self.delegate discoveryManager:self didLoseDevice:device];
 
         if (self.devicePicker)
             [self.devicePicker discoveryManager:self didLoseDevice:device];
     }];
-    
+
     [_discoveryProviders enumerateObjectsUsingBlock:^(DiscoveryProvider *provider, NSUInteger idx, BOOL *stop) {
         [provider stopDiscovery];
         [provider startDiscovery];
@@ -460,7 +404,7 @@
         [self registerDefaultServices];
 
     _searching = YES;
-    
+
     [_discoveryProviders enumerateObjectsUsingBlock:^(DiscoveryProvider *service, NSUInteger idx, BOOL *stop) {
         [service startDiscovery];
     }];
@@ -474,22 +418,18 @@
         return;
 
     _searching = NO;
-    
+
     [_discoveryProviders enumerateObjectsUsingBlock:^(DiscoveryProvider *service, NSUInteger idx, BOOL *stop) {
         [service stopDiscovery];
     }];
-    
+
     if (!_shouldResumeSearch)
     {
         [self.appStateChangeNotifier stopListening];
     }
 }
 
-/// Pauses all discovery providers and the SSID change timer.
 - (void)pauseDiscovery {
-    // moved from -hAppDidEnterBackground:
-    [self stopSSIDTimer];
-
     if (_searching)
     {
         _searching = NO;
@@ -499,11 +439,7 @@
     }
 }
 
-/// Resumes all discovery providers and the SSID change timer.
 - (void)resumeDiscovery {
-    // moved from -hAppDidBecomeActive:
-    [self startSSIDTimer];
-
     if (_shouldResumeSearch)
     {
         _searching = YES;
@@ -545,7 +481,6 @@
 
     device.lastDetection = [[NSDate date] timeIntervalSince1970];
     device.lastKnownIPAddress = description.address;
-    device.lastSeenOnWifi = _currentSSID;
 
     [self addServiceDescription:description toDevice:device];
 
@@ -568,11 +503,11 @@
 - (void)discoveryProvider:(DiscoveryProvider *)provider didLoseService:(ServiceDescription *)description
 {
     DLog(@"%@ (%@)", description.friendlyName, description.serviceId);
-    
+
     ConnectableDevice *device;
 
     @synchronized (_allDevices) { device = [_allDevices objectForKey:description.address]; }
-    
+
     if (device)
     {
         [device removeServiceWithId:description.serviceId];
@@ -647,12 +582,12 @@
         if (deviceAlreadyHasService)
         {
             device.serviceDescription = description;
-            
+
             DeviceService *alreadyAddedService = [device serviceWithName:description.serviceId];
-            
+
             if (alreadyAddedService)
                 alreadyAddedService.serviceDescription = description;
-            
+
             return;
         }
 
@@ -707,13 +642,13 @@
     if (_currentPicker == nil)
     {
         _currentPicker = [[DevicePicker alloc] init];
-        
+
         [self.compatibleDevices enumerateKeysAndObjectsUsingBlock:^(NSString *address, ConnectableDevice *device, BOOL *stop)
         {
             [_currentPicker discoveryManager:self didFindDevice:device];
         }];
     }
-    
+
     return _currentPicker;
 }
 
