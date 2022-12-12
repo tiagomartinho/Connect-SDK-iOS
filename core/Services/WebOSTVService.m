@@ -988,7 +988,8 @@
         iconURL = imageInfo.url;
     }
     
-    if ([self.serviceDescription.version isEqualToString:@"4.0.0"])
+    // Originally [self.serviceDescription.version isEqualToString:@"4.0.0"] but this way we handle 4.1.0 too
+    if ([[self.serviceDescription.version substringToIndex:1] isEqualToString:@"4"])
     {
         if (self.dlnaService)
         {
