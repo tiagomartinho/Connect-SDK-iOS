@@ -306,13 +306,20 @@
     NSString *ok = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_OK" value:@"OK" table:@"ConnectSDK"];
     NSString *cancel = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Cancel" value:@"Cancel" table:@"ConnectSDK"];
 
-    UIAlertAction* okAction = [UIAlertAction actionWithTitle:ok style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction * action) {}];
-    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction * action) {}];
-
-
     _pairingAlert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* okAction = [UIAlertAction actionWithTitle:ok style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction * action) {
+        if ((self.pairingType == DeviceServicePairingTypePinCode || self.pairingType == DeviceServicePairingTypeMixed)) {
+            NSString *pairingCode = [[_pairingAlert textFields] firstObject].text;
+            [self sendPairingKey:pairingCode success:nil failure:nil];
+        }
+    }];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * action) {
+        [self disconnect];
+    }];
+
     [_pairingAlert addAction:okAction];
     [_pairingAlert addAction:cancelAction];
 
@@ -342,11 +349,24 @@
     NSString *alertTitle = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Title" value:title table:@"ConnectSDK"];
     NSString *alertMessage = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Request" value:message table:@"ConnectSDK"];
     NSString *ok = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_OK" value:@"OK" table:@"ConnectSDK"];
-    // TODO
-//    if(!_pinAlertView){
-//        _pinAlertView = [[UIAlertView alloc] initWithTitle:alertTitle message:alertMessage delegate:self cancelButtonTitle:nil otherButtonTitles:ok, nil];
-//    }
-//    dispatch_on_main(^{ [_pinAlertView show]; });
+
+    _pairingAlert = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction* okAction = [UIAlertAction actionWithTitle:ok style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction * action) {
+        if ((self.pairingType == DeviceServicePairingTypePinCode || self.pairingType == DeviceServicePairingTypeMixed)) {
+            NSString *pairingCode = [[_pairingAlert textFields] firstObject].text;
+            [self sendPairingKey:pairingCode success:nil failure:nil];
+        }
+    }];
+    [_pairingAlert addAction:okAction];
+
+    if(self.pairingType == DeviceServicePairingTypePinCode || self.pairingType == DeviceServicePairingTypeMixed){
+        [_pairingAlert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {}];
+        _pairingAlert.message = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Request_Pin" value:@"Please enter the pin code" table:@"ConnectSDK"];
+    }
+
+    dispatch_on_main(^{ [_pairingAlert show]; });
 }
 
 -(void)dismissPinAlertView{
@@ -938,7 +958,8 @@
         iconURL = imageInfo.url;
     }
     
-    if ([self.serviceDescription.version isEqualToString:@"4.0.0"])
+    // Originally [self.serviceDescription.version isEqualToString:@"4.0.0"] but this way we handle 4.1.0 too
+    if ([[self.serviceDescription.version substringToIndex:1] isEqualToString:@"4"])
     {
         if (self.dlnaService)
         {
