@@ -885,7 +885,7 @@
         ImageInfo *imageInfo = [mediaInfo.images firstObject];
         iconURL = imageInfo.url;
     }
-    if ([self.serviceDescription.version isEqualToString:@"4.0.0"])
+    if ([[self.serviceDescription.version substringToIndex:1] isEqualToString:@"4"])
     {
         if (self.dlnaService)
         {
