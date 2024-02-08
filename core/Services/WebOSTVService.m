@@ -328,7 +328,7 @@
         _pairingAlert.message = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Request_Pin" value:@"Please enter the pin code" table:@"ConnectSDK"];
     }
 
-    dispatch_on_main(^{ [_pairingAlert show]; });
+//    dispatch_on_main(^{ [_pairingAlert show]; });
 }
 
 -(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
@@ -366,7 +366,7 @@
         _pairingAlert.message = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Request_Pin" value:@"Please enter the pin code" table:@"ConnectSDK"];
     }
 
-    dispatch_on_main(^{ [_pairingAlert show]; });
+//    dispatch_on_main(^{ [_pairingAlert show]; });
 }
 
 -(void)dismissPinAlertView{
